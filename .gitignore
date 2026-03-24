@@ -1,0 +1,46 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv
+*.egg-info/
+dist/
+build/
+
+# Data
+data/
+logs/
+*.db
+*.sqlite
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# Models (large files)
+*.bin
+*.gguf
+*.safetensors
+models/*/
+!models/.gitkeep
+
+# Knowledge
+knowledge/*/
+!knowledge/.gitkeep
+
+# Temp
+tmp/
+temp/
+.cache/

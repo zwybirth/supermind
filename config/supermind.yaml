@@ -1,0 +1,123 @@
+# SuperMind 配置文件
+
+# 模型配置
+model:
+  name: "qwen3.5-35b-a3b"
+  provider: "ollama"
+  base_url: "http://localhost:11434"
+  temperature: 0.7
+  max_tokens: 4096
+  context_window: 32768
+  
+  # 多模型配置（用于专家路由）
+  experts:
+    code: "qwen3.5-35b-a3b"  # 可配置为 deepseek-coder
+    reasoning: "qwen3.5-35b-a3b"
+    creative: "qwen3.5-35b-a3b"
+
+# RAG 配置
+rag:
+  # 向量数据库
+  vector_store:
+    type: "chroma"  # chroma, milvus, pinecone
+    path: "./data/vector_db"
+    embedding_model: "BAAI/bge-large-zh-v1.5"
+    
+  # 检索策略
+  retrieval:
+    vector_top_k: 100
+    bm25_top_k: 50
+    rerank_top_k: 10
+    rerank_model: "BAAI/bge-reranker-large"
+    
+  # 分块策略
+  chunking:
+    small_chunk_size: 256
+    large_chunk_size: 1024
+    overlap: 50
+    
+  # 知识图谱（可选）
+  knowledge_graph:
+    enabled: true
+    uri: "bolt://localhost:7687"
+    user: "neo4j"
+    password: "password"
+
+# 记忆系统配置
+memory:
+  # 工作记忆（会话级）
+  working:
+    max_tokens: 8000
+    
+  # 短期记忆（SQLite）
+  short_term:
+    db_path: "./data/short_term.db"
+    max_items: 1000
+    ttl_hours: 24
+    
+  # 长期记忆（向量库）
+  long_term:
+    enabled: true
+    retrieval_k: 5
+    
+  # 技能记忆
+  skills:
+    path: "./data/skills"
+    auto_extract: true
+
+# Agent 编排配置
+agent:
+  # 最大迭代次数
+  max_iterations: 5
+  
+  # 并行执行
+  parallel_execution: true
+  max_workers: 4
+  
+  # 子Agent配置
+  sub_agents:
+    - name: "analyzer"
+      system_prompt: "你是一个需求分析专家..."
+    - name: "planner"  
+      system_prompt: "你是一个任务规划专家..."
+    - name: "executor"
+      system_prompt: "你是一个执行专家..."
+    - name: "reviewer"
+      system_prompt: "你是一个质量审查专家..."
+
+# 工具配置
+tools:
+  enabled:
+    - calculator
+    - code_executor
+    - web_search
+    - file_system
+    - datetime
+    
+  # 代码执行配置
+  code_executor:
+    timeout: 30
+    allowed_languages: ["python", "javascript", "bash"]
+    sandbox: true
+    
+  # 网络搜索配置
+  web_search:
+    provider: "duckduckgo"  # duckduckgo, bing, google
+    max_results: 10
+
+# 系统行为
+system:
+  # 日志级别
+  log_level: "INFO"
+  
+  # 是否显示思考过程
+  show_thinking: true
+  
+  # 自动保存会话
+  auto_save: true
+  
+  # 缓存配置
+  cache:
+    enabled: true
+    ttl: 3600
+    max_size: 1000
